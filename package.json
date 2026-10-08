@@ -1,0 +1,17 @@
+{
+  "name": "nodejstest",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Node.js golden-path service with Jenkins, Helm, and Sonar",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "lint": "node --check server.js && node --check server.test.js",
+    "test": "node --test",
+    "sonar": "npx --yes sonarqube-scanner"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

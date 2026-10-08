@@ -1,0 +1,6 @@
+apiVersion: v2
+name: nodejstest
+description: Node.js golden-path service with Jenkins, Helm, and Sonar
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
