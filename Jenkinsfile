@@ -1,12 +1,33 @@
 // Node.js golden path — lint, unit tests, SonarQube, Helm lint.
 // Job name in Hub: demo/nodejstest
+// Runs on a Node.js 20 agent pod (OpenShift Jenkins master has no npm).
 pipeline {
-  agent any
+  agent {
+    kubernetes {
+      defaultContainer 'nodejs'
+      yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: nodejs
+    image: registry.access.redhat.com/ubi9/nodejs-20:latest
+    command:
+    - sleep
+    args:
+    - 99d
+    tty: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+'''
+    }
+  }
 
   options {
     buildDiscarder(logRotator(numToKeepStr: '10'))
     timeout(time: 20, unit: 'MINUTES')
-    timestamps()
   }
 
   environment {
@@ -72,7 +93,7 @@ pipeline {
 
   post {
     always {
-      cleanWs()
+      echo "pipeline finished: ${currentBuild.currentResult}"
     }
   }
 }
