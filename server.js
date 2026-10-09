@@ -7,7 +7,16 @@ const port = Number(process.env.PORT || 3000);
 const appName = "nodejstest";
 
 function health() {
-  return { status: "ok", app: appName };
+  return { status: "ok", app: appName, mesh: "ambient" };
+}
+
+function api() {
+  return {
+    service: appName,
+    message: "ok",
+    mesh: "ambient",
+    ts: new Date().toISOString(),
+  };
 }
 
 const page = () => `<!doctype html>
@@ -15,13 +24,19 @@ const page = () => `<!doctype html>
 <body style="font-family:sans-serif;margin:2rem;max-width:42rem">
   <h1>${appName}</h1>
   <p>Node.js golden-path service with Jenkins, Helm, and Sonar</p>
-  <p>Golden path: Jenkins → Sonar → Helm.</p>
+  <p>Golden path: Jenkins → Sonar → Helm. Mesh: ambient.</p>
 </body></html>`;
 
 const server = http.createServer((req, res) => {
-  if (req.url === "/health") {
+  const url = (req.url || "/").split("?")[0];
+  if (url === "/health") {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(health()));
+    return;
+  }
+  if (url === "/api") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(api()));
     return;
   }
   res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
@@ -34,4 +49,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { health, server };
+module.exports = { health, api, server };
